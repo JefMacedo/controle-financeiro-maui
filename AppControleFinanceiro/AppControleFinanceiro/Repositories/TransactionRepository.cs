@@ -6,17 +6,17 @@ namespace AppControleFinanceiro.Repositories;
 public class TransactionRepository : ITransactionRepository
 {
     private readonly LiteDatabase _database;
-    private readonly string collectionName = "transactions";
+    private readonly string _collectionName = "transactions";
     
-    public TransactionRepository()
+    public TransactionRepository(LiteDatabase database)
     {
-        _database = new LiteDatabase("Filename=C:/users/AppData/database.db;Connection=Shared");
+        _database = database;
     }
 
     public List<Transaction> GetAll()
     {
         return _database
-            .GetCollection<Transaction>(collectionName)
+            .GetCollection<Transaction>(_collectionName)
             .Query()
             .OrderByDescending(a => a.Date)
             .ToList();
@@ -24,20 +24,20 @@ public class TransactionRepository : ITransactionRepository
 
     public void Add(Transaction transaction)
     {
-        var col =_database.GetCollection<Transaction>(collectionName);
+        var col =_database.GetCollection<Transaction>(_collectionName);
         col.Insert(transaction);
         col.EnsureIndex(a => a.Date);
     }
 
     public void Update(Transaction transaction)
     {
-        var col =_database.GetCollection<Transaction>(collectionName);
+        var col =_database.GetCollection<Transaction>(_collectionName);
         col.Update(transaction);
     }
 
     public void Delete(Transaction transaction)
     {
-        var col =_database.GetCollection<Transaction>(collectionName);
+        var col =_database.GetCollection<Transaction>(_collectionName);
         col.Delete(transaction.Id);
     }
 }
